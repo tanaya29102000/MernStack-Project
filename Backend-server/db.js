@@ -1,13 +1,23 @@
-const mongoose = require('mongoose');
-const mongoURI ="mongodb+srv://kanerkartanaya29:tanayaer0.kq36a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-const mongoDB=async()=>{
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-await  mongoose.connect(mongoURI,{userNewUrlParser:true},(err,result)=>{
-    if (err)console.loglog("---",err)
-        else{
-    console.log("Connected Succesfully!!");
-        }
-});
-}
+const mongoDB = async () => {
+  try {
+    // Connect to MongoDB
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Connected to MongoDB successfully!");
 
-module.exports=mongoDB;
+    // Optional: Check a specific collection
+    const fetched_data = mongoose.connection.db.collection("food_item");
+    const data = await fetched_data.find({}).toArray();
+    console.log("Sample data:", data);
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1); // Exit on failure
+  }
+};
+
+module.exports = mongoDB;
